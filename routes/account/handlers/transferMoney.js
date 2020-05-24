@@ -14,6 +14,25 @@ export default (req, res) => {
     db[fromAccountIndex]._balance = newFromBalance;
     db[toAccountIndex]._balance = newToBalance;
 
+    const fromTransaction = {
+        type: 'transfer',
+        date: new Date(),
+        amount: amount,
+        balance: newFromBalance,
+        to: toAccountId
+    };
+
+    const toTransaction = {
+        type: 'transfer',
+        date: new Date(),
+        amount: amount,
+        balance: newToBalance,
+        from: fromAccountId
+    };
+
+    db[fromAccountIndex]._transactions.push(fromTransaction);
+    db[toAccountIndex]._transactions.push(toTransaction);
+
     fs.writeFileSync('./db/testDB.json', JSON.stringify(db));
 
     res.status(200).json(`Transfer made to account with id: ${toAccountId} from account with id: ${fromAccountId}.`)
