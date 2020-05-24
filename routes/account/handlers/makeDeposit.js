@@ -8,6 +8,10 @@ export default (req, res) => {
         return res.status(400).json({message: `The provided accountId: ${accountId} is not a valid uuid.`});
     }
 
+    if (amount <= 0 || !Number.isInteger(amount)) {
+        return res.status(400).json({message: `Invalid amount provided!`});
+    }
+
     let db = JSON.parse(fs.readFileSync('./db/testDB.json'));
 
     let accountIndex = db.findIndex((account) => account._id === accountId);

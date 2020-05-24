@@ -9,6 +9,6 @@ export default (req, res) => {
     let db = JSON.parse(fs.readFileSync('./db/testDB.json'));
     db.push(newAccount);
     fs.writeFileSync('./db/testDB.json', JSON.stringify(db));
-    
-    return res.status(201).json({message: `Account created with id: ${newAccount.id}`});
+
+    return res.status(201).json({ message: `Account created with id: ${newAccount.id}` });
 }
