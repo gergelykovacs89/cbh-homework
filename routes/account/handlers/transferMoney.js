@@ -1,12 +1,22 @@
 import fs from 'fs';
+import uuid from 'uuidv4';
 
 export default (req, res) => {
     const { amount, fromAccountId, toAccountId } = req.body;
+
+    if (!uuid.isUuid(fromAccountId) || !uuid.isUuid(toAccountId)) {
+        return res.status(400).json({message: `The provided accountIds: ${fromAccountId} and/or ${toAccountId} are not a valid uuid(s).`});
+    }
 
     let db = JSON.parse(fs.readFileSync('./db/testDB.json'));
 
     let fromAccountIndex = db.findIndex((account) => account._id === fromAccountId);
     let toAccountIndex = db.findIndex((account) => account._id === toAccountId);
+
+    
+    if (fromAccountIndex === -1 || toAccountIndex === -1) {
+        return res.status(404).json({message: `The accounts with the provided accountIds: ${fromAccountId} and/or ${toAccountId} doesn't exist.`});
+    }
 
     const newFromBalance = db[fromAccountIndex]._balance - amount;
     const newToBalance = db[toAccountIndex]._balance + amount;
@@ -19,7 +29,7 @@ export default (req, res) => {
         date: new Date(),
         amount: amount,
         balance: newFromBalance,
-        to: toAccountId
+        to: toAccountId,
     };
 
     const toTransaction = {
@@ -27,7 +37,7 @@ export default (req, res) => {
         date: new Date(),
         amount: amount,
         balance: newToBalance,
-        from: fromAccountId
+        from: fromAccountId,
     };
 
     db[fromAccountIndex]._transactions.push(fromTransaction);
@@ -35,5 +45,5 @@ export default (req, res) => {
 
     fs.writeFileSync('./db/testDB.json', JSON.stringify(db));
 
-    res.status(200).json(`Transfer made to account with id: ${toAccountId} from account with id: ${fromAccountId}.`)
+    return res.status(200).json(`Transfer made to account with id: ${toAccountId} from account with id: ${fromAccountId}.`);
 }
