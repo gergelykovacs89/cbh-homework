@@ -8,10 +8,10 @@ import getTransactionHistory from './handlers/getTransactionHistory.js';
 
 const accountRouter = express.Router();
 
-accountRouter.post('/create', createAccount)
+accountRouter.post('/create', createAccount);
 accountRouter.get('/current-balance/:accountId', getCurrentBalance);
 accountRouter.get('/transaction-history/:accountId', getTransactionHistory)
-accountRouter.post('/transfer', transferMoney)
+accountRouter.post('/transfer', transferMoney);
 accountRouter.put('/make-deposit', makeDeposit);
 accountRouter.put('/make-withdraw', makeWithdraw);
 
